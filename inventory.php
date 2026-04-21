@@ -507,6 +507,7 @@ if (isset($_GET['edit_supplier'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="inventory-page">
     <div class="inventory-wrapper">
@@ -1225,7 +1226,7 @@ if (isset($_GET['edit_supplier'])) {
     </div>
 
     <!-- Profit Charts Modal -->
-    <div class="modal" id="profitChartsModal">
+    <div class="modal large-modal" id="profitChartsModal">
         <div class="modal-content large-modal">
             <div class="modal-header">
                 <h3>Profit Margin Detailed Report</h3>
@@ -1476,22 +1477,31 @@ if (isset($_GET['edit_supplier'])) {
                 pieTab.style.display = 'none';
                 barBtn.classList.add('active');
                 pieBtn.classList.remove('active');
-                renderProfitBarChart();
+                // Delay chart rendering to ensure canvas is visible
+                setTimeout(() => renderProfitBarChart(), 100);
             } else {
                 barTab.style.display = 'none';
                 pieTab.style.display = 'block';
                 barBtn.classList.remove('active');
                 pieBtn.classList.add('active');
-                renderProfitPieChart();
+                // Delay chart rendering to ensure canvas is visible
+                setTimeout(() => renderProfitPieChart(), 100);
             }
         }
 
         function renderProfitBarChart() {
-            const ctx = document.getElementById('profitBarChart').getContext('2d');
+            const canvas = document.getElementById('profitBarChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.profitBarChartInstance) {
+                window.profitBarChartInstance.destroy();
+            }
+            
             const labels = profitMarginData.map(item => item.item_name);
             const data = profitMarginData.map(item => parseFloat(item.profit_value));
 
-            new Chart(ctx, {
+            window.profitBarChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -1530,11 +1540,18 @@ if (isset($_GET['edit_supplier'])) {
         }
 
         function renderProfitPieChart() {
-            const ctx = document.getElementById('profitPieChart').getContext('2d');
+            const canvas = document.getElementById('profitPieChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.profitPieChartInstance) {
+                window.profitPieChartInstance.destroy();
+            }
+            
             const labels = profitMarginData.map(item => item.item_name);
             const data = profitMarginData.map(item => parseFloat(item.profit_value));
 
-            new Chart(ctx, {
+            window.profitPieChartInstance = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: labels,
