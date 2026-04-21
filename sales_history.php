@@ -135,6 +135,7 @@ if (isset($_GET['order_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales History - L LE JOSE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -226,9 +227,6 @@ if (isset($_GET['order_id'])) {
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <a href="admin_page.php" class="back-link">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
                     <h1>L LE JOSE</h1>
                 </div>
                 <a href="logout.php" class="logout-btn">
@@ -238,15 +236,16 @@ if (isset($_GET['order_id'])) {
         </header>
 
         <main class="dashboard-container">
-<div class="content-header">
-                <h2 id="pageTitle">Sales History</h2>
-                <div class="tab-buttons">
-                    <button class="tab-btn active" onclick="switchTab('completed')">Completed Sales</button>
-                    <button class="tab-btn" onclick="switchTab('pending')">Pending Orders</button>
+            <div class="content-header">
+                <h2>Sales History</h2>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="menu.php" class="btn-primary">
+                        <i class="fas fa-plus"></i> New Order
+                    </a>
+                    <a href="admin_page.php" class="btn-primary" style="background:#8b5cf6;">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
                 </div>
-                <a href="menu.php" class="btn-primary">
-                    <i class="fas fa-plus"></i> New Order
-                </a>
             </div>
 
             <div class="search-filter-bar">
@@ -349,7 +348,8 @@ if (isset($_GET['order_id'])) {
                     'sales_growth' => 'Sales Growth',
                     'year_sales_trend' => 'Year Trend',
                     'daily_sales' => 'Daily Sales',
-                    'budget_target' => 'Budget Target'
+                    'budget_target' => 'Budget Target',
+                    'stock_aging_report' => 'Stock Aging Report'
                 ];
                 foreach ($options as $val => $label): ?>
                     <label style="display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'; this.style.background='#f0f4ff'" onmouseout="this.style.borderColor='#eee'; this.style.background='transparent'">

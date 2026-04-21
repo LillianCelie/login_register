@@ -33,6 +33,59 @@ $history_table_sql = "CREATE TABLE IF NOT EXISTS inventory_history (
 )";
 mysqli_query($conn, $history_table_sql);
 
+function getTableColumns($conn, $table_name) {
+    $columns = [];
+    $result = mysqli_query($conn, "SHOW COLUMNS FROM `$table_name`");
+    if (!$result) {
+        return $columns;
+    }
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $columns[] = $row['Field'];
+    }
+
+    return $columns;
+}
+
+function hasAllColumns($columns, $required_columns) {
+    foreach ($required_columns as $column) {
+        if (!in_array($column, $columns, true)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function getInventoryHistoryQuery($history_columns, $history_search) {
+    if (hasAllColumns($history_columns, ['item_name', 'category', 'quantity', 'reason', 'changed_at'])) {
+        $history_query = "SELECT id, item_name, category, quantity, reason, changed_at FROM inventory_history WHERE 1=1";
+        if ($history_search) {
+            $history_query .= " AND item_name LIKE '%$history_search%'";
+        }
+
+        return $history_query . " ORDER BY changed_at DESC LIMIT 200";
+    }
+
+    $history_query = "
+        SELECT
+            h.id,
+            COALESCE(i.item_name, CONCAT('Item #', h.item_id)) AS item_name,
+            i.category AS category,
+            COALESCE(h.new_quantity, h.old_quantity, 0) AS quantity,
+            h.action AS reason,
+            h.timestamp AS changed_at
+        FROM inventory_history h
+        LEFT JOIN inventory i ON i.id = h.item_id
+        WHERE 1=1
+    ";
+    if ($history_search) {
+        $history_query .= " AND COALESCE(i.item_name, CONCAT('Item #', h.item_id)) LIKE '%$history_search%'";
+    }
+
+    return $history_query . " ORDER BY h.timestamp DESC LIMIT 200";
+}
+
 function logInventoryHistory($conn, $inventory_id, $action, $item_name, $category = null, $quantity = 0, $reason = null) {
     $inventory_id = intval($inventory_id);
     $action = mysqli_real_escape_string($conn, $action);
@@ -40,9 +93,29 @@ function logInventoryHistory($conn, $inventory_id, $action, $item_name, $categor
     $category = mysqli_real_escape_string($conn, $category);
     $quantity = intval($quantity);
     $reason = mysqli_real_escape_string($conn, $reason);
+    $history_columns = getTableColumns($conn, 'inventory_history');
 
-    $sql = "INSERT INTO inventory_history (inventory_id, action, item_name, category, quantity, reason) VALUES ($inventory_id, '$action', '$item_name', '$category', $quantity, '$reason')";
-    mysqli_query($conn, $sql);
+    if (hasAllColumns($history_columns, ['inventory_id', 'item_name', 'category', 'quantity', 'reason'])) {
+        $sql = "INSERT INTO inventory_history (inventory_id, action, item_name, category, quantity, reason) VALUES ($inventory_id, '$action', '$item_name', '$category', $quantity, '$reason')";
+        mysqli_query($conn, $sql);
+        return;
+    }
+
+    if (hasAllColumns($history_columns, ['item_id', 'old_quantity', 'new_quantity', 'user', 'timestamp'])) {
+        $changed_by = isset($_SESSION['username']) ? mysqli_real_escape_string($conn, $_SESSION['username']) : 'system';
+        $old_quantity = 'NULL';
+        $new_quantity = $quantity;
+
+        if ($action === 'add') {
+            $old_quantity = 0;
+        } elseif ($action === 'delete') {
+            $old_quantity = $quantity;
+            $new_quantity = 0;
+        }
+
+        $sql = "INSERT INTO inventory_history (item_id, action, old_quantity, new_quantity, old_price, new_price, user) VALUES ($inventory_id, '$action', $old_quantity, $new_quantity, NULL, NULL, '$changed_by')";
+        mysqli_query($conn, $sql);
+    }
 }
 
 // Handle Add/Edit/Delete Item
@@ -89,8 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $image_sql = $image_path ? "'$image_path'" : "NULL";
         $size_sql = $size !== '' ? "'$size'" : "NULL";
 
-        $sql = "INSERT INTO inventory (item_name, sku, category, price, cost, quantity_in_stock, size, image_path, date_added) 
-                VALUES ('$item_name', '$sku', '$category', $price, $cost, $quantity, $size_sql, $image_sql, NOW())";
+        $sql = "INSERT INTO inventory (item_name, sku, category, price, cost, quantity_in_stock, size, image_path, batch_number, date_added) 
+                VALUES ('$item_name', '$sku', '$category', $price, $cost, $quantity, $size_sql, $image_sql, 1, NOW())";
 
         if (mysqli_query($conn, $sql)) {
             $insert_id = mysqli_insert_id($conn);
@@ -130,7 +203,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $image_sql = $image_path_to_save ? "'$image_path_to_save'" : "NULL";
         $size_sql = $size !== '' ? "'$size'" : "NULL";
 
-        $sql = "UPDATE inventory SET item_name='$item_name', sku='$sku', category='$category', price=$price, cost=$cost, quantity_in_stock=$quantity, size=$size_sql, image_path=$image_sql 
+        // Check if quantity is being increased to determine if we need a new batch
+        $existing_quantity = 0;
+        $existing_batch = 1;
+        $existing_result = mysqli_query($conn, "SELECT quantity_in_stock, batch_number FROM inventory WHERE id=$item_id");
+        if ($existing_result && $row = mysqli_fetch_assoc($existing_result)) {
+            $existing_quantity = intval($row['quantity_in_stock']);
+            $existing_batch = intval($row['batch_number']);
+        }
+
+        $new_batch = $existing_batch;
+        if ($quantity > $existing_quantity) {
+            $new_batch = $existing_batch + 1; // Increment batch for additional stock
+        }
+
+        $sql = "UPDATE inventory SET item_name='$item_name', sku='$sku', category='$category', price=$price, cost=$cost, quantity_in_stock=$quantity, size=$size_sql, image_path=$image_sql, batch_number=$new_batch 
                 WHERE id=$item_id";
 
         if (mysqli_query($conn, $sql)) {
@@ -347,13 +434,24 @@ foreach ($valuation_items as &$valuation_item) {
 }
 unset($valuation_item);
 
-$top_selling_query = "SELECT i.id, i.item_name, i.category, COALESCE(SUM(oi.qty), 0) as total_qty_sold, COALESCE(SUM(oi.subtotal), 0) as total_sales_value FROM inventory i LEFT JOIN order_items oi ON oi.inventory_id = i.id GROUP BY i.id ORDER BY total_qty_sold DESC, total_sales_value DESC LIMIT 10";
-$top_selling_result = mysqli_query($conn, $top_selling_query);
-$top_selling = mysqli_fetch_all($top_selling_result, MYSQLI_ASSOC);
+$top_selling_query = "SELECT i.id, i.item_name, i.category, COALESCE(SUM(oi.qty), 0) as total_qty_sold, COALESCE(SUM(oi.subtotal), 0) as total_sales_value FROM inventory i LEFT JOIN order_items oi ON i.id = oi.inventory_id GROUP BY i.id HAVING total_qty_sold > 0 ORDER BY total_qty_sold DESC, total_sales_value DESC LIMIT 10";
 
-$bottom_selling_query = "SELECT i.id, i.item_name, i.category, COALESCE(SUM(oi.qty), 0) as total_qty_sold, COALESCE(SUM(oi.subtotal), 0) as total_sales_value FROM inventory i LEFT JOIN order_items oi ON oi.inventory_id = i.id GROUP BY i.id ORDER BY total_qty_sold ASC, total_sales_value ASC LIMIT 10";
-$bottom_selling_result = mysqli_query($conn, $bottom_selling_query);
-$bottom_selling = mysqli_fetch_all($bottom_selling_result, MYSQLI_ASSOC);
+$top_selling_result = @mysqli_query($conn, $top_selling_query);
+$top_selling = [];
+if ($top_selling_result !== false) {
+    $top_selling = mysqli_fetch_all($top_selling_result, MYSQLI_ASSOC);
+} else {
+    error_log("Top selling query failed: " . mysqli_error($conn));
+}
+
+$bottom_selling_query = "SELECT i.id, i.item_name, i.category, COALESCE(SUM(oi.qty), 0) as total_qty_sold, COALESCE(SUM(oi.subtotal), 0) as total_sales_value FROM inventory i LEFT JOIN order_items oi ON i.id = oi.inventory_id GROUP BY i.id HAVING total_qty_sold > 0 ORDER BY total_qty_sold ASC, total_sales_value ASC LIMIT 10";
+$bottom_selling_result = @mysqli_query($conn, $bottom_selling_query);
+$bottom_selling = [];
+if ($bottom_selling_result !== false) {
+    $bottom_selling = mysqli_fetch_all($bottom_selling_result, MYSQLI_ASSOC);
+} else {
+    error_log("Bottom selling query failed: " . mysqli_error($conn));
+}
 
 $low_stock_count = 0;
 foreach ($items as $item) {
@@ -374,13 +472,10 @@ $suppliers = mysqli_fetch_all($supplier_result, MYSQLI_ASSOC);
 
 // Inventory history search
 $history_search = isset($_GET['history_search']) ? mysqli_real_escape_string($conn, $_GET['history_search']) : '';
-$history_query = "SELECT id, inventory_id, action, item_name, category, quantity, reason, changed_at FROM inventory_history WHERE 1=1";
-if ($history_search) {
-    $history_query .= " AND item_name LIKE '%$history_search%'";
-}
-$history_query .= " ORDER BY changed_at DESC LIMIT 200";
+$history_columns = getTableColumns($conn, 'inventory_history');
+$history_query = getInventoryHistoryQuery($history_columns, $history_search);
 $history_result = mysqli_query($conn, $history_query);
-$history_items = mysqli_fetch_all($history_result, MYSQLI_ASSOC);
+$history_items = $history_result ? mysqli_fetch_all($history_result, MYSQLI_ASSOC) : [];
 
 // Prepare edit item data if requested (pre-fill the modal form)
 $edit_item = null;
@@ -409,9 +504,9 @@ if (isset($_GET['edit_supplier'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Management - L LE JOSE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="inventory-page">
     <div class="inventory-wrapper">
@@ -487,15 +582,15 @@ if (isset($_GET['edit_supplier'])) {
                     <div class="content-header">
                     <h2>Products Management</h2>
                     <div class="content-actions">
-                        <div class="view-toggle" role="group" aria-label="View toggle">
-                            <button type="button" class="view-btn active" id="viewListBtn" title="List view">
+                        <div class="flex border border-gray-300 rounded-lg overflow-hidden bg-white">
+                            <button type="button" class="view-btn bg-blue-500 text-white px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-blue-600" id="viewListBtn" title="List view">
                                 <i class="fas fa-list"></i>
                             </button>
-                            <button type="button" class="view-btn" id="viewTilesBtn" title="Tiles view">
+                            <button type="button" class="view-btn bg-gray-200 text-gray-600 px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-gray-300" id="viewTilesBtn" title="Tiles view">
                                 <i class="fas fa-th"></i>
                             </button>
                         </div>
-                        <button class="btn-primary" onclick="openAddModal()">
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2" onclick="openAddModal()">
                             <i class="fas fa-plus"></i> Add Item
                         </button>
                     </div>
@@ -1969,13 +2064,15 @@ if (isset($_GET['edit_supplier'])) {
             if (mode === 'tiles') {
                 if (listView) listView.style.display = 'none';
                 if (tilesView) tilesView.style.display = 'block';
-                if (listBtn) listBtn.classList.remove('active');
-                if (tilesBtn) tilesBtn.classList.add('active');
+                // Update button styles
+                listBtn.className = 'view-btn bg-gray-200 text-gray-600 px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-gray-300';
+                tilesBtn.className = 'view-btn bg-blue-500 text-white px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-blue-600';
             } else {
                 if (listView) listView.style.display = 'block';
                 if (tilesView) tilesView.style.display = 'none';
-                if (listBtn) listBtn.classList.add('active');
-                if (tilesBtn) tilesBtn.classList.remove('active');
+                // Update button styles
+                listBtn.className = 'view-btn bg-blue-500 text-white px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-blue-600';
+                tilesBtn.className = 'view-btn bg-gray-200 text-gray-600 px-3 py-2 flex items-center justify-center min-w-[40px] transition-colors hover:bg-gray-300';
             }
 
             localStorage.setItem('inventoryViewMode', mode);

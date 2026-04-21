@@ -14,7 +14,19 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'employee') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -345,9 +357,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'employee') {
             </div>
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <button id="attendance-menu-btn" class="btn-action btn-primary">Attendance</button>
-                <button id="pos-menu-btn" class="btn-action btn-secondary" id="posBadgeBtn">
-                    POS System <span id="posCartBadge" class="cart-badge" style="display:none;">0</span>
-                </button>
+                <button id="pos-menu-btn" class="btn-action btn-secondary">POS System</button>
             </div>
         </div>
 
@@ -383,174 +393,30 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'employee') {
                     <div class="info-card-label">Work Duration</div>
                     <div id="workDuration" class="info-card-value">0h 00m</div>
                 </div>
-                <div class="info-card">
-                    <div class="info-card-label">Break Time</div>
-                    <div id="breakDuration" class="info-card-value">0m</div>
-                </div>
-                <div class="info-card">
-                    <div class="info-card-label">Status</div>
-                    <div id="summaryStatus" class="info-card-value" style="font-size: 1rem; overflow: hidden; text-overflow: ellipsis;">Not clocked in</div>
-                </div>
-                <div class="info-card">
-                    <div class="info-card-label">Overtime</div>
-                    <div id="summaryOvertime" class="info-card-value">0m</div>
-                </div>
-            </div>
+                <div class="flex flex-col gap-3">
+
+
+                    <button id="pos-menu-btn" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-4 rounded-xl text-base font-semibold cursor-pointer transition-all shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        <i class="fas fa-cash-register mr-2"></i>POS System
+                    </button>
         </div>
+
+
 
         <button onclick="window.location.href='logout.php'" class="btn-logout">Logout</button>
     </div>
 
+    <footer class="bg-gray-800 text-white text-center py-4 mt-10">
+        <p class="text-sm">© 2026 L LE JOSE - Point of Sale System. All rights reserved.</p>
+    </footer>
+
 <script>
-let statusInterval;
-let clockInterval;
 
-function formatDuration(seconds) {
-    seconds = Math.max(0, Math.floor(seconds));
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const parts = [];
-    if (hours) parts.push(hours + 'h');
-    parts.push(minutes.toString().padStart(2, '0') + 'm');
-    return parts.join(' ');
-}
 
-function showToast(message, type = 'info') {
-    const toast = document.getElementById('attendanceToast');
-    const text = document.getElementById('toastMessage');
-    toast.className = `notification-toast show ${type}`;
-    text.textContent = message;
-    clearTimeout(showToast.timeout);
-    showToast.timeout = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 4000);
-}
 
-function setButtonVisibility(state) {
-    document.getElementById('clock-in-btn').disabled = !state.canClockIn;
-    document.getElementById('clock-out-btn').disabled = !state.canClockOut;
-    document.getElementById('start-break-btn').disabled = !state.canStartBreak;
-    document.getElementById('end-break-btn').disabled = !state.canEndBreak;
-}
-
-function updateDashboard(data) {
-    document.getElementById('attendanceStatus').textContent = data.status;
-    document.getElementById('attendanceStatusMeta').textContent = data.statusDetail;
-    document.getElementById('workDuration').textContent = data.workDuration;
-    document.getElementById('breakDuration').textContent = data.breakDuration;
-    document.getElementById('summaryStatus').textContent = data.summaryStatus;
-    document.getElementById('summaryOvertime').textContent = data.overtimeLabel;
-    setButtonVisibility(data.buttonState);
-}
-
-function refreshLiveClock() {
-    const now = new Date();
-    document.getElementById('live-clock').textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-}
-
-function updateStatus(silent = false) {
-    fetch('fetch_status.php')
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            if (!silent) showToast(data.error, 'error');
-            return;
-        }
-        updateDashboard(data);
-    })
-    .catch(err => {
-        console.error('Status check failed:', err);
-        if (!silent) showToast('Unable to update attendance status.', 'error');
-    });
-}
-
-function sendAttendanceAction(action) {
-    const button = this;
-    if (!button) return;
-
-    // Store original content
-    const originalHTML = button.innerHTML;
-
-    // Disable button and show processing
-    button.disabled = true;
-    button.classList.add('processing');
-    button.innerHTML = '<span class="spinner"></span>Processing...';
-
-    fetch('attendance.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `action=${action}`
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.text().then(text => {
-            console.log('Raw response:', text);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            try {
-                return JSON.parse(text);
-            } catch (e) {
-                throw new Error('Invalid JSON response: ' + text);
-            }
-        });
-    })
-    .then(data => {
-        if (data.success) {
-            showToast(data.message, 'success');
-            updateStatus(true);
-        } else {
-            showToast(data.message || 'Action failed', 'error');
-        }
-    })
-    .catch(err => {
-        console.error('Attendance action error:', err);
-        showToast('Failed to process request. Please try again.', 'error');
-    })
-    .finally(() => {
-        // Restore button state
-        button.disabled = false;
-        button.classList.remove('processing');
-        button.innerHTML = originalHTML;
-    });
-}
-
-function showAttendanceSection() {
-    document.getElementById('employee-menu').style.display = 'none';
-    document.getElementById('attendance-section').classList.add('active');
-    updateStatus();
-}
-
-function hideAttendanceSection() {
-    document.getElementById('attendance-section').classList.remove('active');
-    document.getElementById('employee-menu').style.display = 'flex';
-}
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('attendance-menu-btn').onclick = showAttendanceSection;
     document.getElementById('pos-menu-btn').onclick = () => window.location.href = 'pos.php';
-
-    // NEW: Pending cart badge updater
-    async function updatePosBadge() {
-        try {
-            const response = await fetch('pending_order_handler.php?action=get_pending');
-            const data = await response.json();
-            const badge = document.getElementById('posCartBadge');
-            const btn = document.getElementById('posBadgeBtn');
-            
-            if (data.success && data.order && data.order.length > 0) {
-                const itemCount = data.order.reduce((sum, item) => sum + item.qty, 0);
-                badge.textContent = itemCount > 99 ? '99+' : itemCount;
-                badge.style.display = 'inline';
-                btn.classList.add('has-items');
-            } else {
-                badge.style.display = 'none';
-                btn.classList.remove('has-items');
-            }
-        } catch (err) {
-            console.error('Badge update failed:', err);
-        }
-    }
 
     // Attach event listeners using addEventListener for better control
     document.getElementById('clock-in-btn').addEventListener('click', function() {
@@ -569,10 +435,6 @@ window.addEventListener('DOMContentLoaded', () => {
     refreshLiveClock();
     clockInterval = setInterval(refreshLiveClock, 1000);
     statusInterval = setInterval(() => updateStatus(true), 30000);
-    
-    // NEW: Update cart badge every 30s
-    updatePosBadge();
-    setInterval(updatePosBadge, 30000);
 });
 </script>
 </body>
