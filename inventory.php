@@ -7,6 +7,30 @@ if (!isset($_SESSION['username'])) {
 
 include 'config.php';
 
+// Ensure all required columns exist in inventory table
+function ensureInventoryColumns($conn) {
+    $columns_to_add = [
+        'batch_number' => "ALTER TABLE inventory ADD COLUMN batch_number INT NOT NULL DEFAULT 1",
+        'sku' => "ALTER TABLE inventory ADD COLUMN sku VARCHAR(50) NOT NULL DEFAULT ''",
+        'size' => "ALTER TABLE inventory ADD COLUMN size VARCHAR(50) DEFAULT NULL",
+        'image_path' => "ALTER TABLE inventory ADD COLUMN image_path VARCHAR(255) DEFAULT NULL"
+    ];
+
+    $result = mysqli_query($conn, "SHOW COLUMNS FROM inventory");
+    $existing_columns = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $existing_columns[] = $row['Field'];
+    }
+
+    foreach ($columns_to_add as $col_name => $alter_query) {
+        if (!in_array($col_name, $existing_columns)) {
+            mysqli_query($conn, $alter_query);
+        }
+    }
+}
+
+ensureInventoryColumns($conn);
+
 // Ensure supplier and history tables exist
 $suppliers_table_sql = "CREATE TABLE IF NOT EXISTS suppliers (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -512,13 +536,18 @@ if (isset($_GET['edit_supplier'])) {
 <body class="inventory-page">
     <div class="inventory-wrapper">
         <!-- Header -->
-        <header class="inventory-header">
-            <div class="header-top">
-                <div class="logo-area">
-                    <button class="menu-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1>L LE JOSE</h1>
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-area">
+                        <button class="menu-toggle" onclick="toggleSidebar()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1 class="business-name">L LE JOSE</h1>
+                            <p class="header-subtitle">Inventory Management</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="header-actions">
                     <div class="stock-alert-container">
@@ -529,6 +558,9 @@ if (isset($_GET['edit_supplier'])) {
                     </div>
                     <a href="admin_page.php" class="back-btn">
                         <i class="fas fa-arrow-left"></i> Dashboard
+                    </a>
+                    <a href="logout.php" class="btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
@@ -944,22 +976,6 @@ if (isset($_GET['edit_supplier'])) {
                                 <tr><td colspan="7" class="no-data"><i class="fas fa-inbox"></i><p>No items available for valuation</p></td></tr>
                             <?php endif; ?>
                         </tbody>
-                    </table>
-                </div>
-
-                <div class="table-container highlight-panel">
-                    <h3>Stock Analysis Report</h3>
-                    <table class="inventory-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Batch Number</th>
-                                <th>Date Delivered</th>
-                                <th>Batch Expiration Date</th>
-                            </tr>
-                        </thead>
                     </table>
                 </div>
 

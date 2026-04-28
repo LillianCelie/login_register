@@ -36,27 +36,32 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
     </script>
 </head>
 <body class="menu-page">
-    <div class="pos-wrapper">
-        <header class="pos-header">
-            <div class="pos-header-left">
-                <a href="admin_page.php" class="pos-back">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
-                <div class="pos-brand">
-                    <h1>L LE JOSE</h1>
-                    <p>BUSINESS MENU</p>
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-area">
+                    <div>
+                        <h1 class="business-name">L LE JOSE</h1>
+                        <p class="header-subtitle">Business Menu</p>
+                    </div>
                 </div>
             </div>
-            <div class="pos-header-right">
-                <button type="button" class="pos-secondary-btn low-stock-alert" id="lowStockAlertBtn">
-                    <i class="fas fa-exclamation-triangle"></i> Low stock alert
+            <div class="header-actions">
+                <button type="button" class="stock-alert-btn" id="lowStockAlertBtn" title="Low stock alert">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="menuLowStockCount" style="display: none;">0</span>
                 </button>
-                <a href="logout.php" class="pos-secondary-btn">
+                <a href="admin_page.php" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+                <a href="logout.php" class="btn-secondary">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
-        </header>
+        </div>
+    </header>
 
+    <div class="pos-wrapper">
         <main class="pos-main">
             <aside class="pos-sidebar">
                 <h2>Category</h2>
@@ -91,9 +96,30 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
         const searchInput = document.getElementById('menuSearchInput');
         const categoryList = document.getElementById('categoryList');
         const toastEl = document.getElementById('posToast');
+        const menuLowStockCount = document.getElementById('menuLowStockCount');
 
         function formatMoney(amount) {
             return parseFloat(amount || 0).toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
+        }
+
+        function getMenuLowStockItems() {
+            return menuItems
+                .map(item => ({
+                    name: item.item_name,
+                    qty: parseInt(item.stock_quantity, 10) || 0
+                }))
+                .filter(item => item.qty > 0 && item.qty <= LOW_STOCK_THRESHOLD);
+        }
+
+        function updateMenuLowStockCount() {
+            if (!menuLowStockCount) return;
+            const lowStockCount = getMenuLowStockItems().length;
+            if (lowStockCount > 0) {
+                menuLowStockCount.textContent = lowStockCount > 99 ? '99+' : lowStockCount;
+                menuLowStockCount.style.display = 'inline-flex';
+            } else {
+                menuLowStockCount.style.display = 'none';
+            }
         }
 
         function showToast(message) {
@@ -105,12 +131,7 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
         }
 
         function handleLowStockAlert() {
-            const lowStockItems = menuItems
-                .map(item => ({
-                    name: item.item_name,
-                    qty: parseInt(item.stock_quantity, 10) || 0
-                }))
-                .filter(item => item.qty > 0 && item.qty <= LOW_STOCK_THRESHOLD);
+            const lowStockItems = getMenuLowStockItems();
 
             if (!lowStockItems.length) {
                 showToast('No low stock products at the moment.');
@@ -185,6 +206,7 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
         searchInput.addEventListener('input', renderMenuItems);
         document.getElementById('lowStockAlertBtn').addEventListener('click', handleLowStockAlert);
 
+        updateMenuLowStockCount();
         renderCategories();
         renderMenuItems();
     </script>

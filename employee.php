@@ -680,21 +680,27 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
     <header class="dashboard-header">
         <div class="header-content">
             <div class="logo-section">
-                <h1 class="business-name">L LE JOSE</h1>
+                <div>
+                    <h1 class="business-name">L LE JOSE</h1>
+                    <p class="header-subtitle">Employee Center</p>
+                </div>
             </div>
-            <button class="logout-btn" onclick="window.location.href='logout.php'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div class="header-actions">
+                <a href="admin_page.php" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+                <button class="logout-btn" onclick="window.location.href='logout.php'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
         </div>
     </header>
 
     <div class="page-shell">
         <div class="page-heading">
-            <a href="admin_page.php" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <div class="topbar">
-                <div class="page-title">
-                    <p>Employee Center</p>
-                    <h1>Staff roster & payroll</h1>
-                </div>
-                <div class="actions">
+            <div class="page-title">
+                <p>Employee Center</p>
+                <h1>Staff roster & payroll</h1>
+            </div>
+            <div class="actions">
                 <button class="btn btn-secondary" onclick="openEmployeeModal('add')">+ Add New Employee</button>
                 <button id="editButton" class="btn btn-primary btn-disabled" onclick="openEmployeeModal('edit')" disabled>Edit Selected</button>
                 <button id="deleteButton" class="btn btn-danger btn-disabled" onclick="openConfirmModal()" disabled>Delete Selected</button>

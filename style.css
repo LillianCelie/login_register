@@ -173,7 +173,19 @@ body.admin-page {
         font-size: 28px;
         font-weight: 700;
     }
-}
+
+    .dashboard-header .logo-area h1 {
+        color: white !important;
+    }
+
+    .dashboard-header .header-subtitle {
+        margin: 4px 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
 
 .welcome-text {
     font-size: 14px;
@@ -182,24 +194,27 @@ body.admin-page {
 }
 
 .logout-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid white;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
+    background: rgba(106, 54, 54, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #111;
+    padding: 0 36px;
+    min-width: 180px;
+    min-height: 54px;
+    border-radius: 14px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 10px;
     width: auto;
     margin: 0;
 }
 
 .logout-btn:hover {
-    background: white;
-    color: #667eea;
+    background: #f4f6fb;
+    color: #111;
 }
 
 /* Dashboard Container */
@@ -223,16 +238,39 @@ body.admin-page {
     font-weight: 700;
 }
 
-/* Dashboard Grid */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 50px;
-    width: min(100%, 980px);
-    margin-left: auto;
-    margin-right: auto;
+
+margin-bottom: 50px;
+width: min(100%, 1200px);
+margin-left: auto;
+margin-right: auto;
+
+.inventory-card {
+    grid-area: auto;
+}
+
+.employee-card {
+    grid-area: auto;
+}
+
+.sales-card {
+    grid-area: auto;
+}
+
+.menu-card {
+    grid-area: auto;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(200px, 260px));
+    }
+}
+
+@media (max-width: 700px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+    }
 }
 
 .dashboard-card {
@@ -385,7 +423,7 @@ body.admin-page {
     }
 
     .dashboard-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
         gap: 20px;
     }
 
@@ -481,22 +519,23 @@ body.inventory-page {
 
 .header-actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 }
 
 .back-btn {
     background: #667eea;
     color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 0 22px;
+    min-height: 54px;
+    border-radius: 14px;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    border: none;
+    justify-content: center;
+    gap: 10px;
 }
 
 .back-btn:hover {
@@ -692,12 +731,18 @@ body.inventory-page {
 .stock-alert-btn {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
+    border-radius: 14px;
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    padding: 0;
     cursor: pointer;
     position: relative;
     color: #667eea;
-    font-size: 14px;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
 }
 
@@ -744,10 +789,15 @@ body.inventory-page {
     background: #f0f2f7;
     color: #333;
     border: 1px solid rgba(0,0,0,0.1);
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 0 22px;
+    min-height: 54px;
+    border-radius: 14px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     transition: all 0.3s ease;
     width: auto;
     margin: 0;
@@ -757,28 +807,12 @@ body.inventory-page {
     background: #e2e6f3;
 }
 
-.content-actions .btn-primary {
-    background: #667eea;
-    border: none; 
-    cursor: pointer;
-}
+    .menu-page .btn-secondary {
+        min-width: 190px;
+        padding: 0 28px;
+        white-space: nowrap;
+    }
 
-.highlight-panel {
-    background: white;
-    border: 1px solid #e0e0e0;
-    padding: 22px;
-    margin-bottom: 24px;
-}
-
-.highlight-panel h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: rgb(45, 45, 45)
-}
-
-.highlight-panel .inventory-table {
-    background: transparent;
-}
 
 /* Section headers with buttons */
 .section-header {
@@ -3504,7 +3538,7 @@ body.menu-page .pos-menu .add-to-cart {
     font-weight: 600;
 }
 
-..dashboard-container {
+.dashboard-container {
     margin-left: 280px;
     padding: 32px 32px 64px;
     flex: 1;

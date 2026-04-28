@@ -8,9 +8,11 @@ if (isset($_SESSION['username'])) {
     } else {
         header('Location: employee_dashboard.php');
     }
+    exit;
 } else {
+    // Show login form
     header('Location: login_register.html');
+    exit;
 }
-exit;
 ?>
 

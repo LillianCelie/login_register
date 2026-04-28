@@ -227,25 +227,25 @@ if (isset($_GET['order_id'])) {
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <h1>L LE JOSE</h1>
+                    <div>
+                        <h1 class="business-name">L LE JOSE</h1>
+                        <p class="header-subtitle">Sales History</p>
+                    </div>
                 </div>
-                <a href="logout.php" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <div class="header-actions">
+                    <a href="admin_page.php" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Dashboard
+                    </a>
+                    <a href="logout.php" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
             </div>
         </header>
 
         <main class="dashboard-container">
             <div class="content-header">
                 <h2>Sales History</h2>
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <a href="menu.php" class="btn-primary">
-                        <i class="fas fa-plus"></i> New Order
-                    </a>
-                    <a href="admin_page.php" class="btn-primary" style="background:#8b5cf6;">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
-                    </a>
-                </div>
             </div>
 
             <div class="search-filter-bar">

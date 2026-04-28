@@ -62,13 +62,13 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
 
-                <!-- Menu Card -->
-                <div class="dashboard-card menu-card" onclick="window.location.href='menu.php'">
+                <!-- Employee Card -->
+                <div class="dashboard-card employee-card" onclick="window.location.href='employee.php'">
                     <div class="card-icon">
-                        <i class="fas fa-utensils"></i>
+                        <i class="fas fa-users"></i>
                     </div>
-                    <h3>Menu</h3>
-                    <p>Create and manage menu items</p>
+                    <h3>Employee</h3>
+                    <p>Manage staff and roles</p>
                     <div class="card-arrow">
                         <i class="fas fa-arrow-right"></i>
                     </div>
@@ -86,13 +86,13 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
 
-                <!-- Employee Card -->
-                <div class="dashboard-card employee-card" onclick="window.location.href='employee.php'">
+                <!-- Menu Card -->
+                <div class="dashboard-card menu-card" onclick="window.location.href='menu.php'">
                     <div class="card-icon">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-utensils"></i>
                     </div>
-                    <h3>Employee</h3>
-                    <p>Manage staff and roles</p>
+                    <h3>Menu</h3>
+                    <p>Create and manage menu items</p>
                     <div class="card-arrow">
                         <i class="fas fa-arrow-right"></i>
                     </div>
