@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.php");
@@ -19,7 +19,7 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Menu - L LE JOSE</title>
+    <title>Business Menu - AxisOne</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -41,7 +41,7 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
             <div class="logo-section">
                 <div class="logo-area">
                     <div>
-                        <h1 class="business-name">L LE JOSE</h1>
+                        <h1 class="business-name">AxisOne</h1>
                         <p class="header-subtitle">Business Menu</p>
                     </div>
                 </div>
@@ -139,7 +139,7 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
             }
 
             const messages = lowStockItems.map(item => `${item.name} is low stock (${item.qty})`);
-            showToast(messages.slice(0, 2).join(' • '));
+            showToast(messages.slice(0, 2).join(' � '));
         }
 
         function renderCategories() {
@@ -212,3 +212,4 @@ $categories = $category_result ? mysqli_fetch_all($category_result, MYSQLI_ASSOC
     </script>
 </body>
 </html>
+

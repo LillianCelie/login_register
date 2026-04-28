@@ -1,5 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
+:root {
+    --body-bg: linear-gradient(to right,#e2e2e2, #c9d6ff);
+    --container-bg: #f5f5f5;
+    --surface: #fff;
+    --surface-alt: #f8f9fa;
+    --text: #333;
+    --text-muted: #666;
+    --border: rgba(0, 0, 0, 0.08);
+    --panel-border: #e0e0e0;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --btn-primary-bg: #4f6eed;
+    --btn-primary-hover: #3f5ad1;
+    --btn-secondary-bg: #f0f2f7;
+    --btn-secondary-hover: #e2e6f3;
+}
+
+body.dark-mode {
+    --body-bg: #0b1120;
+    --container-bg: #111827;
+    --surface: #1f2937;
+    --surface-alt: #111827;
+    --text: #f8fafc;
+    --text-muted: #cbd5e1;
+    --border: rgba(148, 163, 184, 0.3);
+    --panel-border: #334155;
+    --card-shadow: rgba(0, 0, 0, 0.45);
+    --header-bg: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+    --btn-primary-bg: #4f6eed;
+    --btn-primary-hover: #5b7efb;
+    --btn-secondary-bg: #1f2937;
+    --btn-secondary-hover: #334155;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,8 +42,8 @@
 }
 
 body {
-    background: linear-gradient(to right,#e2e2e2, #c9d6ff);
-    color: #333;
+    background: var(--body-bg);
+    color: var(--text);
 }
 
 body:not(.admin-page) {
@@ -128,14 +162,14 @@ body.admin-page {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #f5f5f5;
+    background: var(--container-bg);
 }
 
 .admin-wrapper {
     display: flex;
     flex-direction: column;
     flex: 1;
-    background: #f5f5f5;
+    background: var(--container-bg);
 }
 
 .admin-wrapper .dashboard-container {
@@ -143,13 +177,13 @@ body.admin-page {
     width: 100%;
     max-width: 1000px;
     flex: 1;
+    background: transparent;
 }
 
-/* Dashboard Header */
 .dashboard-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--header-bg);
     color: white;
-    padding: 20px 0;
+    padding: 14px 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -158,9 +192,80 @@ body.admin-page {
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+
+}
+
+.btn-secondary {
+    background: var(--btn-secondary-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0 22px;
+    min-height: 54px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    width: auto;
+    margin: 0;
+}
+
+.btn-secondary:hover {
+    background: var(--btn-secondary-hover);
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background: var(--header-bg);
+    color: white;
+    padding: 14px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-header .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-toggle-btn {
+    background: var(--btn-secondary-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0 22px;
+    min-height: 54px;
+    width: auto;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--btn-secondary-hover);
+}
 
     .logo-section {
         flex: 1;
@@ -194,9 +299,9 @@ body.admin-page {
 }
 
 .logout-btn {
-    background: rgba(106, 54, 54, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    color: #111;
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 0 36px;
     min-width: 180px;
     min-height: 54px;
@@ -213,8 +318,8 @@ body.admin-page {
 }
 
 .logout-btn:hover {
-    background: #f4f6fb;
-    color: #111;
+    background: var(--btn-secondary-hover);
+    color: var(--text);
 }
 
 /* Dashboard Container */
@@ -232,17 +337,98 @@ body.admin-page {
 
 .dashboard-title h2 {
     font-size: 42px;
-    color: #333;
+    color: var(--text);
     margin: 0;
     letter-spacing: 2px;
     font-weight: 700;
 }
 
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+}
 
-margin-bottom: 50px;
-width: min(100%, 1200px);
-margin-left: auto;
-margin-right: auto;
+
+#valuationSection .table-container.highlight-panel {
+    background: var(--surface);
+    border: 1px solid var(--panel-border);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(17, 55, 120, 0.08);
+    padding: 28px 28px 24px;
+    margin: 0 auto 42px;
+    width: min(100%, 1200px);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+#valuationSection .table-container.highlight-panel > h3,
+#valuationSection .table-container.highlight-panel .section-header {
+    margin-bottom: 22px;
+}
+
+#valuationSection .table-container.highlight-panel table.inventory-table {
+    width: 100%;
+    background: transparent !important;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid rgba(232, 237, 247, 0.95);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+#valuationSection .table-container.highlight-panel table.inventory-table thead {
+    background: #f7f8fb;
+}
+
+#valuationSection .table-container.highlight-panel table.inventory-table tbody tr {
+    background: var(--surface);
+}
+
+#valuationSection .table-container.highlight-panel table.inventory-table th,
+#valuationSection .table-container.highlight-panel table.inventory-table td {
+    background: transparent;
+}
+
+.dashboard-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 2px 8px var(--card-shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.dashboard-card h3 {
+    font-size: 24px;
+    color: var(--text);
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.dashboard-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.inventory-table thead {
+    background: var(--surface-alt);
+    border-bottom: 2px solid var(--panel-border);
+}
+
+.inventory-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(240, 240, 240, 0.9);
+}
 
 .inventory-card {
     grid-area: auto;
@@ -274,10 +460,10 @@ margin-right: auto;
 }
 
 .dashboard-card {
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
     padding: 30px 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--card-shadow);
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -343,16 +529,14 @@ margin-right: auto;
 
 .dashboard-card h3 {
     font-size: 24px;
-    color: #333;
-    margin: 0 0 10px 0;
-    font-weight: 600;
-}
+        color: var(--text);
+        margin: 0 0 10px 0;
+        font-weight: 600;
+    }
 
-.dashboard-card p {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 15px 0;
-    line-height: 1.4;
+    .dashboard-card p {
+        font-size: 14px;
+        color: var(--text-muted);
     text-align: center;
 }
 
@@ -786,9 +970,9 @@ body.inventory-page {
 }
 
 .btn-secondary {
-    background: #f0f2f7;
-    color: #333;
-    border: 1px solid rgba(0,0,0,0.1);
+    background: var(--btn-secondary-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
     padding: 0 22px;
     min-height: 54px;
     border-radius: 14px;
@@ -804,7 +988,7 @@ body.inventory-page {
 }
 
 .btn-secondary:hover {
-    background: #e2e6f3;
+    background: var(--btn-secondary-hover);
 }
 
     .menu-page .btn-secondary {

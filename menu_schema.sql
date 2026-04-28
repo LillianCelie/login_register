@@ -1,4 +1,4 @@
--- Menu Items Table for L LE JOSE POS System
+-- Menu Items Table for AxisOne POS System
 -- Run this SQL to create the menu_items table in your users_db database
 
 CREATE TABLE IF NOT EXISTS menu_items (
@@ -14,3 +14,4 @@ CREATE TABLE IF NOT EXISTS menu_items (
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+

@@ -189,7 +189,7 @@ $lowStockCount = count($lowStockItems);
             <div class="pos-header-left">
                 <a href="employee_dashboard.php" class="pos-back"><i class="fas fa-arrow-left"></i></a>
                 <div class="pos-brand">
-                    <h1>L LE JOSE</h1>
+                    <h1>AxisOne</h1>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -491,7 +491,7 @@ $lowStockCount = count($lowStockItems);
                     </style>
                 </head>
                 <body>
-                    <h1>L LE JOSE</h1>
+                    <h1>AxisOne</h1>
                     <p><strong>Order ID:</strong> ${orderId}</p>
                     <p><strong>Ticket:</strong> ${ticketNumber}</p>
                     <p><strong>Payment:</strong> ${paymentMethod}</p>
@@ -553,3 +553,4 @@ $lowStockCount = count($lowStockItems);
     </script>
 </body>
 </html>
+

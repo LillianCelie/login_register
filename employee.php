@@ -122,6 +122,25 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
         }
 
+        .employee-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+            border-bottom: none;
+        }
+
+        .employee-header .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            min-height: 64px;
+        }
+
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -145,9 +164,9 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
         }
 
         .logout-btn {
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            color: white;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
             padding: 12px 20px;
             border-radius: 999px;
             cursor: pointer;
@@ -159,8 +178,8 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
         }
 
         .logout-btn:hover {
-            background: white;
-            color: #667eea;
+            background: #e2e8f0;
+            color: #1f2937;
         }
 
         .page-heading {
@@ -237,7 +256,8 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-secondary { background: var(--surface); color: var(--text); box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06); }
-        .btn-danger { background: #f97316; color: #fff; }
+        .btn-secondary:hover { background: #e2e6f3; color: #111; }
+        .btn-danger { background: #e74c3c; color: #fff; }
         .btn-disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
 
         .table-card {
@@ -677,19 +697,19 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
     </style>
 </head>
 <body class="admin-page">
-    <header class="dashboard-header">
+    <header class="dashboard-header employee-header">
         <div class="header-content">
             <div class="logo-section">
                 <div>
-                    <h1 class="business-name">L LE JOSE</h1>
-                    <p class="header-subtitle">Employee Center</p>
+                    <h1 class="business-name">AxisOne</h1>
+                    <p class="header-subtitle">EMPLOYEE CENTER</p>
                 </div>
             </div>
             <div class="header-actions">
                 <a href="admin_page.php" class="back-btn">
                     <i class="fas fa-arrow-left"></i> Dashboard
                 </a>
-                <button class="logout-btn" onclick="window.location.href='logout.php'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button class="btn btn-secondary" onclick="window.location.href='logout.php'"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
     </header>
@@ -1476,3 +1496,4 @@ $employees = $result ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
     </script>
 </body>
 </html>
+

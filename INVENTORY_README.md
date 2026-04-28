@@ -1,7 +1,7 @@
-# L LE JOSE POS System - Inventory Module Setup Guide
+# AxisOne POS System - Inventory Module Setup Guide
 
 ## Overview
-This inventory management system has been created for the L LE JOSE POS system with the following features:
+This inventory management system has been created for the AxisOne POS system with the following features:
 - Product inventory management
 - Stock tracking with low-stock alerts
 - Add, Update, and Delete operations
@@ -194,3 +194,4 @@ For issues or questions, contact your system administrator.
 ---
 Created: March 2026
 Last Updated: March 2026
+

@@ -115,7 +115,7 @@ function formatHoursMinutesPayroll($seconds)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Payroll - L LE JOSE</title>
+    <title>My Payroll - AxisOne</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -239,7 +239,7 @@ function formatHoursMinutesPayroll($seconds)
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo">L LE JOSE</div>
+            <div class="sidebar-logo">AxisOne</div>
             <div class="sidebar-tag">Employee Portal</div>
         </div>
         <nav class="sidebar-nav">
@@ -435,3 +435,4 @@ function formatHoursMinutesPayroll($seconds)
     </script>
 </body>
 </html>
+

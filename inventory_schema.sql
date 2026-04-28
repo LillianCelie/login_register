@@ -1,4 +1,4 @@
--- Inventory Table for L LE JOSE POS System
+-- Inventory Table for AxisOne POS System
 -- Run this SQL to create the inventory table in your users_db database
 
 CREATE TABLE IF NOT EXISTS inventory (
@@ -52,3 +52,4 @@ CREATE TABLE IF NOT EXISTS inventory_history (
     changed_by VARCHAR(100),
     changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+

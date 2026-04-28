@@ -4,74 +4,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Register - L LE JOSE</title>
+    <title>Login / Register - AxisOne</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Poppins', sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .page-layout {
+            width: min(1180px, 100%);
+            margin: 0 auto;
+            display: grid;
+            gap: 2.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1.55fr 1fr;
+            }
+        }
+
+        .hero-panel {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 3rem;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+        }
+
+        .hero-panel h1 {
+            font-size: clamp(3rem, 4vw, 4.5rem);
+            line-height: 1.02;
+            margin: 0 0 0.75rem;
+        }
+
+        .hero-panel p.lead {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.78);
+            max-width: 42rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-label {
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.68);
+            margin-bottom: 1rem;
+        }
+
+        .animated-copy {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 100%;
+        }
+
+        #animated-text {
+            font-size: clamp(2rem, 3vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        #animated-text::after {
+            content: '|';
+            animation: blink 1s steps(2, start) infinite;
+            color: #ffffff;
+            margin-left: 0.2rem;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .auth-panel {
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(24px);
+            border-radius: 32px;
+            padding: 2.5rem;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+        }
+
+        .auth-panel h2 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .auth-panel p.subtitle {
+            margin: 0.75rem 0 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .auth-panel label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .auth-panel input,
+        .auth-panel select {
+            width: 100%;
+            padding: 1rem 1.1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            outline: none;
+        }
+
+        .auth-panel input::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .auth-panel button {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .auth-panel button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-gradient-blue {
+            background: linear-gradient(90deg, #4f6eed, #7c5cf6);
+            color: white;
+        }
+
+        .btn-gradient-green {
+            background: linear-gradient(90deg, #16c79a, #22dd8b);
+            color: white;
+        }
+
+        .auth-panel .link-button {
+            color: #cbd5ff;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .auth-panel .message {
+            padding: 1rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .auth-panel .message.error {
+            background: rgba(248, 113, 113, 0.16);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: #fee2e2;
+        }
+
+        .auth-panel .message.success {
+            background: rgba(34, 197, 94, 0.16);
+            border: 1px solid rgba(34, 197, 94, 0.28);
+            color: #dcfce7;
+        }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
-    <div class="max-w-md w-full space-y-8 bg-white/20 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/30">
-        <div class="text-center">
-            <h2 class="text-4xl font-bold text-white mb-2">L LE JOSE</h2>
-            <p class="text-white/80">Employee Portal</p>
-        </div>
+<body class="min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="page-layout">
+        <section class="hero-panel">
+            <div>
+                <p class="hero-label">A Central Hub for Business Management</p>
+                <h1>AxisOne System</h1>
+                <p class="lead">All-in-One Management System</p>
+            </div>
+            <div>
+                <p class="hero-label">Dynamic tools for</p>
+                <div class="animated-copy">
+                    <span id="animated-text"></span>
+                </div>
+            </div>
+            <br>
+            <p class="lead">Manage everything in one place — smarter, faster, easier.</p>
+        </section>
 
-        <div id="login-form" class="space-y-6">
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Username</label>
-                <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
+        <section class="auth-panel">
+            <div class="text-center mb-10">
+                <h2>AxisOne</h2>
+                <p class="subtitle">Login Portal</p>
             </div>
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Password</label>
-                <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
-            </div>
-            <button onclick="login()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:from-blue-600 hover:to-purple-700 transform hover:-translate-y-1 transition-all duration-200">
-                Login
-            </button>
-            <p class="text-center text-white/70">
-                Don't have an account? <a onclick="showRegister()" class="text-blue-200 font-semibold cursor-pointer hover:text-blue-100">Register</a>
-            </p>
-            <div id="login-error" class="hidden p-3 bg-red-500/20 border border-red-500/50 text-red-100 rounded-xl"></div>
-        </div>
 
-        <div id="register-form" class="space-y-6 hidden">
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Full Name</label>
-                <input type="text" id="reg-name" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
+            <div id="login-form" class="space-y-6">
+                <div>
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" placeholder="Enter your username">
+                </div>
+                <div>
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button type="button" onclick="login()" class="btn-gradient-blue">Login</button>
+                <p class="text-center text-white/70">
+                    Don't have an account? <span onclick="showRegister()" class="link-button">Register</span>
+                </p>
+                <div id="login-error" class="message error hidden"></div>
             </div>
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Username</label>
-                <input type="text" id="reg-username" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
+
+            <div id="register-form" class="space-y-6 hidden">
+                <div>
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Enter your full name">
+                </div>
+                <div>
+                    <label for="reg-username">Username</label>
+                    <input type="text" id="reg-username" placeholder="Choose a username">
+                </div>
+                <div>
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" placeholder="Create a password">
+                </div>
+                <div>
+                    <label for="reg-role">Role</label>
+                    <select id="reg-role">
+                        <option value="employee">Employee</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="button" onclick="register()" class="btn-gradient-green">Create Account</button>
+                <p class="text-center text-white/70">
+                    Have an account? <span onclick="showLogin()" class="link-button">Login</span>
+                </p>
+                <div id="reg-error" class="message error hidden"></div>
             </div>
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Password</label>
-                <input type="password" id="reg-password" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50">
-            </div>
-            <div>
-                <label class="block text-white/90 font-medium mb-2">Role</label>
-                <select id="reg-role" class="w-full px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-white/50">
-                    <option value="employee">Employee</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <button onclick="register()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:from-emerald-600 hover:to-green-700 transform hover:-translate-y-1 transition-all duration-200">
-                Create Account
-            </button>
-            <p class="text-center text-white/70">
-                Have an account? <a onclick="showLogin()" class="text-blue-200 font-semibold cursor-pointer hover:text-blue-100">Login</a>
-            </p>
-            <div id="reg-error" class="hidden p-3 bg-red-500/20 border border-red-500/50 text-red-100 rounded-xl"></div>
-        </div>
+        </section>
     </div>
 
     <script>
+        const heroPhrases = [
+            'Inventory Management',
+            'Sales Analytics',
+            'Employee Monitoring'
+        ];
+        let heroIndex = 0;
+        let heroPosition = 0;
+        let heroDeleting = false;
+
+        function updateHeroText() {
+            const textElement = document.getElementById('animated-text');
+            const currentPhrase = heroPhrases[heroIndex];
+
+            if (!heroDeleting) {
+                heroPosition++;
+                textElement.textContent = currentPhrase.slice(0, heroPosition);
+
+                if (heroPosition === currentPhrase.length) {
+                    heroDeleting = true;
+                    setTimeout(updateHeroText, 1800);
+                    return;
+                }
+            } else {
+                heroPosition--;
+                textElement.textContent = currentPhrase.slice(0, heroPosition);
+
+                if (heroPosition === 0) {
+                    heroDeleting = false;
+                    heroIndex = (heroIndex + 1) % heroPhrases.length;
+                    setTimeout(updateHeroText, 500);
+                    return;
+                }
+            }
+
+            setTimeout(updateHeroText, heroDeleting ? 50 : 90);
+        }
+
+        function startHeroTextAnimation() {
+            setTimeout(updateHeroText, 300);
+        }
+
         async function login() {
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            
+
             if (!username || !password) {
                 showError('login-error', 'Please fill in all fields');
                 return;
@@ -155,12 +384,15 @@
             const el = document.getElementById(id);
             el.textContent = message;
             el.classList.remove('hidden');
-            el.className = el.className.replace('bg-red', 'bg-green') + ' bg-green-500/20 border-green-500/50 text-green-100';
+            el.classList.remove('error');
+            el.classList.add('success');
         }
 
         function showRegister() {
             document.getElementById('login-form').classList.add('hidden');
             document.getElementById('register-form').classList.remove('hidden');
+            document.getElementById('login-error')?.classList.add('hidden');
+            document.getElementById('reg-error')?.classList.add('hidden');
         }
 
         function showLogin() {
@@ -179,6 +411,8 @@
                 }
             }
         });
+
+        startHeroTextAnimation();
     </script>
 </body>
 </html>

@@ -407,7 +407,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'employee') {
     </div>
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-10">
-        <p class="text-sm">© 2026 L LE JOSE - Point of Sale System. All rights reserved.</p>
+        <p class="text-sm">© 2026 AxisOne - Point of Sale System. All rights reserved.</p>
     </footer>
 
 <script>
@@ -439,3 +439,4 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+

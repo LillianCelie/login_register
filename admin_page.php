@@ -12,7 +12,7 @@ if (!isset($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - L LE JOSE POS</title>
+    <title>Admin Dashboard - AxisOne POS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -34,11 +34,13 @@ if (!isset($_SESSION['username'])) {
         <header class="dashboard-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <h1 class="business-name">L LE JOSE</h1>
+                    <h1 class="business-name">AxisOne</h1>
                 </div>
-                <a href="logout.php" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <div class="header-actions">
+                    <a href="logout.php" class="btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
             </div>
         </header>
 
@@ -62,13 +64,13 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
 
-                <!-- Employee Card -->
-                <div class="dashboard-card employee-card" onclick="window.location.href='employee.php'">
+                <!-- Menu Card -->
+                <div class="dashboard-card menu-card" onclick="window.location.href='menu.php'">
                     <div class="card-icon">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-utensils"></i>
                     </div>
-                    <h3>Employee</h3>
-                    <p>Manage staff and roles</p>
+                    <h3>Menu</h3>
+                    <p>Create and manage menu items</p>
                     <div class="card-arrow">
                         <i class="fas fa-arrow-right"></i>
                     </div>
@@ -86,13 +88,13 @@ if (!isset($_SESSION['username'])) {
                     </div>
                 </div>
 
-                <!-- Menu Card -->
-                <div class="dashboard-card menu-card" onclick="window.location.href='menu.php'">
+                <!-- Employee Card -->
+                <div class="dashboard-card employee-card" onclick="window.location.href='employee.php'">
                     <div class="card-icon">
-                        <i class="fas fa-utensils"></i>
+                        <i class="fas fa-users"></i>
                     </div>
-                    <h3>Menu</h3>
-                    <p>Create and manage menu items</p>
+                    <h3>Employee</h3>
+                    <p>Manage staff and roles</p>
                     <div class="card-arrow">
                         <i class="fas fa-arrow-right"></i>
                     </div>
@@ -103,10 +105,11 @@ if (!isset($_SESSION['username'])) {
     </div>
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-10">
-        <p class="text-sm">© 2026 L LE JOSE - Point of Sale System. All rights reserved.</p>
+        <p class="text-sm">© 2026 AxisOne - Inventory Management & Point of Sale System. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
+
 

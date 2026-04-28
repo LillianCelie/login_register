@@ -169,7 +169,7 @@ date_default_timezone_set('Asia/Manila');
     </style>
 </head>
 <body>
-    <h1>L LE JOSE</h1>
+    <h1>AxisOne</h1>
     <div class="header-info">
         <p><strong>Ticket #:</strong> <?= $ticketNumber ?></p>
         <p><strong>Order #:</strong> <?= $orderId ?></p>
@@ -260,3 +260,4 @@ date_default_timezone_set('Asia/Manila');
     </script>
 </body>
 </html>
+
